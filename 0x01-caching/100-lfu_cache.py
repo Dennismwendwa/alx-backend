@@ -21,7 +21,10 @@ class LFUCache(BaseCaching):
                     if v == min_frequency
                     ]
                 if len(keys_to_discard) > 1:
-                    discarded_key = min(keys_to_discard, key=lambda k: self.usage_count if k in self.cache_data else float("inf"))
+                    discarded_key = min(keys_to_discard,
+                                        key=lambda k: self.usage_count
+                                        if k in self.cache_data
+                                        else float("inf"))
                 else:
                     discarded_key = keys_to_discard[0]
                 if discarded_key in self.cache_data:
