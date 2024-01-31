@@ -20,7 +20,7 @@ class LRUCache(BaseCaching):
                 print(f"DISCARD: {discarded_key}")
             self.cache_data[key] = item
             self.order.append(key)
-    
+
     def get(self, key):
         """This method get item from the cache"""
         if key is not None:
