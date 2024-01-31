@@ -9,7 +9,7 @@ class LFUCache(BaseCaching):
         """Initializes LFUCache"""
         super().__init__()
         self.frequency = {}
-        self.order = []
+        self.usage_count = 0
 
     def put(self, key, item):
         """This method add items to the cache"""
@@ -21,7 +21,7 @@ class LFUCache(BaseCaching):
                     if v == min_frequency
                     ]
                 if len(keys_to_discard) > 1:
-                    discarded_key = self.order.pop(0)
+                    discarded_key = min(keys_to_discard, key=lambda k: self.usage_count if k in self.cache_data else float("inf"))
                 else:
                     discarded_key = keys_to_discard[0]
                 if discarded_key in self.cache_data:
@@ -30,11 +30,12 @@ class LFUCache(BaseCaching):
                     print(f"DISCARD: {discarded_key}")
             self.cache_data[key] = item
             self.frequency[key] = self.frequency.get(key, 0) + 1
-            self.order.append(key)
+            self.usage_count += 1
 
     def get(self, key):
         """This method get item from cache by key"""
         if key is not None:
-            if key in self.order:
+            if key in self.cache_data:
                 self.frequency[key] += 1
+                self.usage_count += 1
             return self.cache_data.get(key)
