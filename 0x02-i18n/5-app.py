@@ -42,6 +42,7 @@ def before_request() -> None:
     user = get_user()
     g.user = user
 
+
 @babel.localeselector
 def get_locale() -> str:
     """Getting locale langeage"""
