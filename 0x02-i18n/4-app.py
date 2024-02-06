@@ -24,18 +24,23 @@ babel.init_app(app)
 
 @babel.localeselector
 def get_locale() -> str:
-    """Getiing locale"""
-    if "locale" in request.args and request.args["locale"
+    """Getting locale language"""
+    query = request.query_string.decode("utf-8").split("&")
+    query_dict = dict(map(
+        lambda k: (k if "=" in k else f"{k}").split("="), query
+    ))
+    if "locale" in query_dict and query_dict["locale"
                                                  ] in app.config[
                                                     "LANGUAGES"
                                                    ]:
-        return request.args["locale"]
+        return query_dict["locale"]
     return request.accept_languages.best_match(app.config["LANGUAGES"])
 # babel.init_app(app, locale_selector=get_locale)
 
 
 @app.route("/")
 def home() -> str:
+    """This is the home page route"""
     title = _("Welcome to Helberton")
     header = _("Hello world")
 
