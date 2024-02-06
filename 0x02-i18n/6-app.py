@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, g
-from flask_babel import Babel, _
-
-app = Flask(__name__)
-babel = Babel(app)
+from flask_babel import Babel
+from typing import Dict, Union
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -18,49 +16,50 @@ class Config:
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
+app = Flask(__name__)
 app.config.from_object(Config)
-babel.init_app(app)
+app.url_map.strict_slashes = False
+babel = Babel(app)
 
 
-def get_user_locale() -> str:
+def get_user() -> Union[Dict, None]:
     """
     Priority order: URL parameter,
     user settings, request header, default locale
     """
-    user_locale = request.args.get('locale', type=str)
-    if user_locale and user_locale in app.config['LANGUAGES']:
-        return user_locale
+    login_id = request.args.get("locale", "")
+    if login_id:
+        return users.get(int(login_id), None)
 
-    if g.user and g.user.get('locale'
-                             ) and g.user['locale'
-                                          ] in app.config['LANGUAGES']:
-        return g.user['locale']
-
-    request_locale = request.headers.get('Accept-Language', '')
-    if request_locale:
-        return request_locale.split(',')[0]
-
-    return app.config['BABEL_DEFAULT_LOCALE']
+    return None
 
 
 @babel.localeselector
 def get_locale() -> str:
     """Getting locale"""
-    return get_user_locale()
+    locale = request.args.get("locale", "")
+    if locale in app.config["LANGUAGES"]:
+        return locale
+    if g.user and g.user["locale"] in app.config["LANGUAGES"]:
+        return g.user["locale"]
+    header_locale = request.headers.get("locale", "")
+    if header_locale in app.config["LANGUAGES"]:
+        return header_locale
+    return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
 @app.before_request
 def before_request() -> None:
     """Run before any other call"""
-    user_id = request.args.get('login_as', type=int)
-    g.user = get_user(user_id)
+    user = get_user()
+    g.user = user
 
 
-@app.route('/')
+@app.route("/")
 def index() -> str:
     """This is the home path"""
-    return render_template('5-index.html')
+    return render_template("5-index.html")
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(DEBUG=True, host="0.0.0.0", port=5000)
