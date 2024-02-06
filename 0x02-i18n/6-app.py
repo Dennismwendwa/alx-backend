@@ -11,13 +11,16 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
+
 class Config:
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
+
 app.config.from_object(Config)
 babel.init_app(app)
+
 
 def get_user_locale() -> str:
     """
@@ -28,7 +31,9 @@ def get_user_locale() -> str:
     if user_locale and user_locale in app.config['LANGUAGES']:
         return user_locale
 
-    if g.user and g.user.get('locale') and g.user['locale'] in app.config['LANGUAGES']:
+    if g.user and g.user.get('locale'
+                             ) and g.user['locale'
+                                          ] in app.config['LANGUAGES']:
         return g.user['locale']
 
     request_locale = request.headers.get('Accept-Language', '')
@@ -37,10 +42,12 @@ def get_user_locale() -> str:
 
     return app.config['BABEL_DEFAULT_LOCALE']
 
+
 @babel.localeselector
 def get_locale() -> str:
     """Getting locale"""
     return get_user_locale()
+
 
 @app.before_request
 def before_request() -> None:
@@ -48,11 +55,12 @@ def before_request() -> None:
     user_id = request.args.get('login_as', type=int)
     g.user = get_user(user_id)
 
+
 @app.route('/')
 def index() -> str:
-</html>
     """This is the home path"""
     return render_template('5-index.html')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

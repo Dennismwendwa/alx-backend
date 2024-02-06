@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 babel = Babel(app)
 
+
 class Config:
     """mapping all supported languages"""
     LANGUAGES = [

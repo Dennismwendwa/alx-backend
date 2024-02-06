@@ -3,9 +3,11 @@
 from flask import Flask, render_template
 from flask_babel import Babel, _
 
+
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 babel = Babel(app)
+
 
 class Config:
     """mapping all supported languages"""
@@ -15,13 +17,18 @@ class Config:
     BABEL_DEFAULT_LOCALE = "en"
     BALEL_DEFAULT_TIMEZONE = "UTC"
 
+
 app.config.from_object(Config)
 babel.init_app(app)
+
 
 @babel.localeselector
 def get_locale() -> str:
     """Getiing locale"""
-    if "locale" in request.args and request.args["locale"] in app.config["LANGUAGES"]:
+    if "locale" in request.args and request.args["locale"
+                                                 ] in app.config[
+                                                    "LANGUAGES"
+                                                   ]:
         return request.args["locale"]
     return request.accept_languages.best_match(app.config["LANGUAGES"])
 # babel.init_app(app, locale_selector=get_locale)

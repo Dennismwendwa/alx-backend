@@ -11,13 +11,16 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
+
 class Config:
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
+
 app.config.from_object(Config)
 babel.init_app(app)
+
 
 def get_user_timezone() -> str:
     """
@@ -40,10 +43,12 @@ def get_user_timezone() -> str:
 
     return app.config['BABEL_DEFAULT_TIMEZONE']
 
+
 @babel.timezoneselector
 def get_timezone() -> str:
     """Getting time zone"""
     return get_user_timezone()
+
 
 @app.before_request
 def before_request() -> None:
@@ -51,10 +56,12 @@ def before_request() -> None:
     user_id = request.args.get('login_as', type=int)
     g.user = get_user(user_id)
 
+
 @app.route('/')
 def index() -> str:
     """Home route"""
     return render_template('5-index.html')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
