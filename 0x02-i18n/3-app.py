@@ -32,6 +32,7 @@ def get_locale() -> str:
 
 @app.route("/")
 def home() -> str:
+    """Home page path"""
     title = _("Welcome to Helberton")
     header = _("Hello world")
 
