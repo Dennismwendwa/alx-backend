@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """This script set up flask app"""
-from flask import Flask, render_template, g
-from flask_babel import Babel, _
-from typing import Union, Dic
+from flask import Flask, render_template, g, request
+from flask_babel import Babel
+from typing import Union, Dict
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -29,7 +29,7 @@ users = {
 
 
 def get_user() -> Union[Dict, None]:
-    """Getting users"""
+    """Getting users from users dict"""
     logged = request.args.get("login_as")
     if logged:
         return users.get(int(logged))
@@ -42,21 +42,20 @@ def before_request() -> None:
     user = get_user()
     g.user = user
 
-
+@babel.localeselector
 def get_locale() -> str:
-    """Getiing locale"""
+    """Getting locale langeage"""
+    loc = request.args.get("locale", "")
+    if loc in app.config["LANGUAGES"]:
+        return loc
     return request.accept_languages.best_match(app.config["LANGUAGES"])
-
-
-babel.init_app(app, locale_selector=get_locale)
+# babel.init_app(app, locale_selector=get_locale)
 
 
 @app.route("/")
 def home() -> str:
-    title = _("Welcome to Helberton")
-    header = _("Hello world")
-
-    return render_template("5-index.html", title=title, header=header)
+    """This is the home page route"""
+    return render_template("5-index.html")
 
 
 if __name__ == "__main__":
