@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """This script set up flask app"""
 from flask import Flask, render_template
-from flask_babel import Babel, _
+from flask_babel import Babel
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -23,10 +23,8 @@ babel.init_app(app)
 
 @babel.localeselector
 def get_locale() -> str:
-    """Getiing locale"""
+    """Getting locale lamguages"""
     return request.accept_languages.best_match(app.config["LANGUAGES"])
-
-
 # babel.init_app(app, locale_selector=get_locale)
 
 
