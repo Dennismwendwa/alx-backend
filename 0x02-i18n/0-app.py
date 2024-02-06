@@ -8,6 +8,7 @@ app.url_map.strict_slashes = False
 
 @app.route("/")
 def home() -> str:
+    """Home page route"""
     return render_template("1-index.html")
 
 
