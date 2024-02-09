@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 from typing import Dict, Union
@@ -11,6 +12,7 @@ users = {
 
 
 class Config:
+    """Default module settings"""
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
